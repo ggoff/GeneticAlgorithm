@@ -7,10 +7,12 @@ class Domain
   attr_reader :pop_size
   attr_reader :tests
   attr_reader :maxGen
+  attr_reader :tournamentSize
   
   def initialize
-    @pop_size = 10
+    @pop_size = 100
     @maxGen = 3
+    @tournamentSize = 5
     populate_tests()
   end
   

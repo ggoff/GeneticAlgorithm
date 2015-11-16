@@ -20,6 +20,7 @@ class Population
   def updatePopulation
     updatePopulationAccuracy()
     puts "updatingPopulation"
+    puts "#{@population.size}"
     @population = @population.sort { |x,y| y.fitness <=> x.fitness }
     BreedPopulation()
   end
@@ -27,18 +28,20 @@ class Population
   def BreedPopulation
     @parents = @population.clone()
     @children = Array.new()
-    (0..@population.size/4).each do
+    (0..@population.size/2 -1).each do
       @parents.compact
       #puts "ParentPoolSize #{@parents.size}"
-      index1 = rand(0..@parents.size/2)
-      index2 = rand(@parents.size/2..@parents.size-1)
+      #index1 = rand(0..@parents.size/2)
+      #index2 = rand(@parents.size/2..@parents.size-1)
       #puts "Index1 #{index1}, Index2 #{index2}"
-      ind1 = @parents[index1]
-      ind2 = @parents[index2]
+      #ind1 = @parents[index1]
+      #ind2 = @parents[index2]
       #puts "Parent1 #{ind1}"
       #puts "Parent2 #{ind2}"
-      @parents.delete(ind1)
-      @parents.delete(ind2)
+      ind1 = Tournament()
+      #@parents.delete(ind1)
+      ind2 = Tournament()
+      #@parents.delete(ind2)
       @childPair = Breed(ind1, ind2)
       @children.push(@childPair[0])
       @children.push(@childPair[1])
@@ -51,6 +54,20 @@ class Population
     else
       updatePopulationAccuracy()
      end
+  end
+  
+  def Tournament
+    @pool = @parents.clone
+    #puts("#{@pool.size}     #{@parents.size}")
+    @contestants = Array.new()
+    (0..$DOMAIN.tournamentSize-1).each do |i|
+      @contestants.push(@pool[rand(@pool.size)])
+      @pool.delete(@contestants[@contestants.size-1])
+      @pool.compact()
+    end
+    #puts("#{@pool.size}   #{@contestants.size}    #{@contestants[0]}")
+    @contestants = @contestants.sort { |x,y| y.fitness <=> x.fitness }
+    return @contestants[0]
   end
   
   def Breed(ind1, ind2)
